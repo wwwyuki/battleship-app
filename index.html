@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海戦ゲーム</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="title-popup" class="title-popup">
+        <h1 class="title-text">海戦ゲーム</h1>
+    </div>
+
+    <h1>海戦ゲーム (Battleship)</h1>
+
+    <main class="main-content">
+        <div class="game-container">
+            <div class="board-wrapper">
+                <h2>敵の艦隊 (AI)</h2>
+                <div class="board-area">
+                    <div class="game-board" id="ai-board"></div>
+                    <div class="ship-info" id="ai-ship-info"></div>
+                </div>
+            </div>
+            <div class="board-wrapper">
+                <h2>あなたの艦隊 (YOU)</h2>
+                <div class="board-area">
+                    <div class="game-board" id="player-board"></div>
+                    <div class="ship-info" id="player-ship-info"></div>
+                </div>
+            </div>
+        </div>
+        <div class="controls-wrapper">
+            <div class="info-container">
+                <p id="turn-display">あなたの艦隊を配置してください</p>
+                <p id="info-display"></p>
+                <div class="button-container" id="placement-buttons">
+                    <button id="rotate-button">艦隊を回転</button>
+                    <button id="start-button" disabled>ゲーム開始</button>
+                </div>
+                <div class="button-container">
+                    <button id="rules-button">遊び方</button>
+                    <button id="volume-button">🔊</button>
+                    <button id="reset-button" style="display: none;">もう一度プレイ</button>
+                </div>
+            </div>
+            <div class="shipyard-container">
+                <h3>艦隊ドック</h3>
+                <div class="ship-previews" id="ship-previews">
+                    <div class="ship-preview destroyer-preview horizontal" draggable="true" data-name="destroyer"><div class="ship-cell"></div><div class="ship-cell"></div></div>
+                    <div class="ship-preview cruiser-preview horizontal" draggable="true" data-name="cruiser"><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div></div>
+                    <div class="ship-preview battleship-preview horizontal" draggable="true" data-name="battleship"><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="rules-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2>遊び方</h2>
+            <h3>1. 配置フェーズ</h3>
+            <ul>
+                <li>画面下の「艦隊ドック」から艦をドラッグし、あなたのマップ（右側）に配置します。</li>
+                <li>「艦隊を回転」ボタンで、配置する艦の向きを変えられます。</li>
+                <li>すべての艦を配置すると「ゲーム開始」ボタンが押せるようになります。</li>
+            </ul>
+            <h3>2. 戦闘フェーズ</h3>
+            <ul>
+                <li>敵のマップ（左側）のマスをクリックして攻撃します。</li>
+                <li>攻撃がヒットすると赤、外れると水色で表示されます。</li>
+                <li>あなたとAIが交互に攻撃を繰り返します。</li>
+                <li>先に相手の艦をすべて撃沈した方の勝利です！</li>
+            </ul>
+            <button id="close-rules-button">閉じる</button>
+        </div>
+    </div>
+    
+    <audio id="hit-sound" src="hit.mp3" preload="auto"></audio>
+    <audio id="sunk-sound" src="sunk.mp3" preload="auto"></audio>
+    <audio id="title-sound" src="title.mp3" preload="auto"></audio>
+    <audio id="bgm-sound" src="bgm.mp3" loop preload="auto"></audio>
+    <script src="script.js"></script>
+</body>
+</html>

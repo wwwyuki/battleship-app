@@ -1,0 +1,87 @@
+body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f0f8ff;
+    padding: 0 20px;
+}
+.main-content { display: flex; align-items: flex-start; gap: 30px; }
+.game-container { display: flex; gap: 20px; }
+.controls-wrapper { width: 280px; display: flex; flex-direction: column; gap: 20px; }
+
+/* --- 👇ここからテキストエリアのスタイル修正👇 --- */
+.info-container { 
+    text-align: center;
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: 1px solid #ddd;
+}
+.info-container p {
+    margin: 5px 0 15px 0;
+    min-height: 1.2em; /* 高さを確保してガタつきを防ぐ */
+}
+/* --- 👆ここまでテキストエリアのスタイル修正👆 --- */
+
+.board-wrapper { text-align: center; }
+.board-area { display: flex; gap: 15px; }
+.game-board { width: 300px; height: 300px; display: grid; grid-template-columns: repeat(10, 1fr); grid-template-rows: repeat(10, 1fr); border: 2px solid #333; }
+.cell { width: 30px; height: 30px; border: 1px solid #ccc; background-color: #fff; box-sizing: border-box; }
+#ai-board .cell:hover { background-color: #e0ffff; cursor: pointer; }
+#player-board .battleship { background-color: #6c757d; }
+#player-board .cruiser { background-color: #4682b4; }
+#player-board .destroyer { background-color: #b0c4de; }
+.miss { background-color: #add8e6; }
+#ai-board .cell.hit { background-color: #ff4c4c; }
+#player-board .cell.hit { background-color: #dc3545 !important; box-shadow: inset 0 0 5px rgba(0,0,0,0.6); }
+.sunk { background-color: #333 !important; }
+.ship-info { width: 120px; text-align: left; padding-top: 10px; }
+.ship-info div { margin-bottom: 5px; padding: 2px 5px; border-radius: 4px; background-color: #eee; }
+.ship-info .sunk-info { text-decoration: line-through; background-color: #ccc; color: #666; }
+.button-container { margin-top: 10px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+button { padding: 10px 20px; font-size: 16px; cursor: pointer; border: none; border-radius: 5px; }
+#volume-button { padding: 10px 15px; flex-grow: 1; } /* 音量ボタンのサイズ調整 */
+#rules-button { flex-grow: 2; } /* 遊び方ボタンのサイズ調整 */
+button:disabled { cursor: not-allowed; background-color: #ccc; }
+#reset-button { width: 100%; }
+.shipyard-container { margin-top: 0; padding: 10px; background-color: #e3f2fd; border-radius: 8px; }
+.ship-previews { display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; }
+.ship-preview { display: flex; margin: 5px; cursor: grab; border: 1px solid transparent; }
+.ship-preview.vertical { flex-direction: column; }
+.ship-preview .ship-cell { width: 30px; height: 30px; border: 1px solid #999; }
+.destroyer-preview .ship-cell { background-color: #b0c4de; }
+.cruiser-preview .ship-cell { background-color: #4682b4; }
+.battleship-preview .ship-cell { background-color: #6c757d; }
+.ship-preview.dragging { opacity: 0.5; }
+.cell.drag-over-valid { background-color: #90ee90; }
+.cell.drag-over-invalid { background-color: #f08080; }
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+.modal-overlay.hidden { display: none; }
+.modal-content { background-color: white; padding: 20px 40px; border-radius: 10px; max-width: 500px; text-align: left; }
+.modal-content h2 { margin-top: 0; text-align: center; }
+.modal-content h3 { border-bottom: 2px solid #eee; padding-bottom: 5px; }
+.modal-content ul { padding-left: 20px; }
+.modal-content li { margin-bottom: 10px; }
+#close-rules-button { display: block; margin: 20px auto 0; }
+.title-popup { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #001f3f; display: flex; justify-content: center; align-items: center; z-index: 2000; animation: fade-in-out 3s ease-in-out forwards; }
+.title-text { font-size: 5rem; color: white; text-shadow: 0 0 15px rgba(255, 255, 255, 0.8); }
+@keyframes fade-in-out { 0% { opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
+@media (max-width: 800px) {
+    .main-content {
+        flex-direction: column; /* メインエリアを縦積みに変更 */
+        align-items: center;
+    }
+
+    .game-container {
+        flex-direction: column; /* ゲームボードも縦積みに変更 */
+        gap: 30px;
+    }
+
+    .controls-wrapper {
+        width: 100%;
+        max-width: 500px; /* コントロールエリアの最大幅を指定 */
+    }
+}
+/* --- 👆ここまでスマートフォン用の調整👆 --- */
