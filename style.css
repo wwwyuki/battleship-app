@@ -68,7 +68,6 @@ button:disabled { cursor: not-allowed; background-color: #ccc; }
 .title-popup { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #001f3f; display: flex; justify-content: center; align-items: center; z-index: 2000; animation: fade-in-out 3s ease-in-out forwards; }
 .title-text { font-size: 5rem; color: white; text-shadow: 0 0 15px rgba(255, 255, 255, 0.8); }
 @keyframes fade-in-out { 0% { opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
-/* --- 👇ここからスマートフォン用の調整👇 --- */
 @media (max-width: 800px) {
     .main-content {
         flex-direction: column; /* メインエリアを縦積みに変更 */
@@ -77,30 +76,12 @@ button:disabled { cursor: not-allowed; background-color: #ccc; }
 
     .game-container {
         flex-direction: column; /* ゲームボードも縦積みに変更 */
-        gap: 20px; /* ボード間の隙間を少し詰める */
+        gap: 30px;
     }
 
     .controls-wrapper {
         width: 100%;
         max-width: 500px; /* コントロールエリアの最大幅を指定 */
     }
-    
-    /* ↓↓ ボードとセルのサイズを小さくする設定 ↓↓ */
-    .game-board {
-        width: 250px;  /* ボードの幅を300pxから250pxに変更 */
-        height: 250px; /* ボードの高さを300pxから250pxに変更 */
-    }
-
-    .cell {
-        width: 25px;   /* セルの幅を30pxから25pxに変更 */
-        height: 25px;  /* セルの高さを30pxから25pxに変更 */
-    }
-    
-    /* 配置する艦のプレビューサイズも上記に合わせる */
-    .ship-preview .ship-cell {
-        width: 25px;
-        height: 25px;
-    }
-    /* ↑↑ ボードとセルのサイズを小さくする設定 ↑↑ */
 }
 /* --- 👆ここまでスマートフォン用の調整👆 --- */
