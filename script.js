@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 音量関連 ---
     function setVolume() {
-        const sfxSounds = [hitSound, sunkSound];
+        const sfxSounds = [hitSound, sunkSound]; // titleSoundを削除
         let sfxVolume, bgmVolume, newIcon;
         switch (volumeLevel) {
             case 2: sfxVolume = 0.2; bgmVolume = 0.03; newIcon = '🔊'; break;
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
         createBoard(aiBoardEl);
         aiShips = placeAllShipsRandomly();
         setupPlacementPhase();
-        turnDisplay.textContent = 'あなたの艦隊を右側のマップに配置してください';
+        turnDisplay.textContent = 'あなたの艦隊を配置してください';
         infoDisplay.textContent = '';
         
         const shipyardContainer = document.querySelector('.shipyard-container');
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 【モバイル用】クリックで配置
     function setupMobilePlacement(playerCells) {
         if (!mobileShipSelector) return;
-        infoDisplay.textContent = '下のドックから艦を選び、右側のマップをタップして配置してください。';
+        infoDisplay.textContent = '下のドックから艦を選び、マップをタップして配置してください。';
         mobileShipSelector.innerHTML = '';
 
         const previewsToClone = document.querySelectorAll('.shipyard-container .ship-preview');
@@ -326,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
         infoDisplay.textContent = '敵の艦隊を攻撃せよ！';
 
         aiBoardEl.addEventListener('click', handlePlayerClick);
-        aiAttackInterval = setInterval(aiAttack, 500);
+        aiAttackInterval = setInterval(aiAttack, 1200);
     }
 
     function handlePlayerClick(e) {
@@ -497,7 +497,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- Service Workerの登録 ---
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        // ★修正: パスを相対パスに変更
         navigator.serviceWorker.register('./sw.js').then(registration => {
             console.log('ServiceWorker registration successful with scope: ', registration.scope);
         }).catch(error => {
