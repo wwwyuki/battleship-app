@@ -2,20 +2,10 @@
   "name": "海戦ゲーム (Battleship)",
   "short_name": "海戦ゲーム",
   "start_url": "./index.html",
+  "scope": ".",
+  "id": "/?source=pwa",
   "display": "standalone",
   "background_color": "#f0f8ff",
   "theme_color": "#001f3f",
-  "description": "ブラウザで遊べる本格的な海戦ゲームです。",
-  "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+  "description": "ブラウザで遊べる本格的な海戦ゲームです。"
 }

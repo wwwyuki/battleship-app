@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const hitSound = document.getElementById('hit-sound');
     const sunkSound = document.getElementById('sunk-sound');
     const titlePopup = document.getElementById('title-popup');
-    const titleSound = document.getElementById('title-sound');
     const bgmSound = document.getElementById('bgm-sound');
     const mobileShipSelector = document.getElementById('mobile-ship-selector');
     let winLosePanel, winLoseText;
@@ -47,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
         isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || ('ontouchstart' in window);
 
         setVolume();
-        playSound(titleSound);
         titlePopup.addEventListener('animationend', () => { titlePopup.style.display = 'none'; });
         setupGlobalEventListeners();
         resetGame();
@@ -64,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 音量関連 ---
     function setVolume() {
-        const sfxSounds = [titleSound, hitSound, sunkSound];
+        const sfxSounds = [hitSound, sunkSound];
         let sfxVolume, bgmVolume, newIcon;
         switch (volumeLevel) {
             case 2: sfxVolume = 0.2; bgmVolume = 0.03; newIcon = '🔊'; break;
