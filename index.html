@@ -33,8 +33,7 @@
         </div>
         <div class="controls-wrapper">
             <div class="info-container">
-                <p id="turn-display">あなたの艦隊を配置してください</p>
-                <p id="turn-display">パソコンはドラッグ、スマホは戦艦を選択して配置</p>
+                <p id="turn-display">あなたの艦隊を右のマップに配置してください</p>
                 <p id="info-display"></p>
                 <div class="button-container" id="placement-buttons">
                     <button id="rotate-button">艦隊を回転</button>
@@ -46,6 +45,7 @@
                     <button id="reset-button" style="display: none;">もう一度プレイ</button>
                 </div>
             </div>
+            
             <div class="shipyard-container">
                 <h3>艦隊ドック</h3>
                 <div class="ship-previews" id="ship-previews">
@@ -53,8 +53,14 @@
                     <div class="ship-preview cruiser-preview horizontal" draggable="true" data-name="cruiser"><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div></div>
                     <div class="ship-preview battleship-preview horizontal" draggable="true" data-name="battleship"><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div><div class="ship-cell"></div></div>
                 </div>
-                
             </div>
+            
+            <div class="mobile-placement-controls">
+                <h3>艦隊ドック</h3>
+                <div id="mobile-ship-selector">
+                    </div>
+            </div>
+
         </div>
     </main>
 
@@ -63,7 +69,8 @@
             <h2>遊び方</h2>
             <h3>1. 配置フェーズ</h3>
             <ul>
-                <li>画面下の「艦隊ドック」から艦をドラッグ(スマホは選択)し、あなたのマップ（右側）に配置します。</li>
+                <li>【PC】画面下の「艦隊ドック」から艦をドラッグし、あなたのマップに配置します。</li>
+                <li>【スマホ】画面下の「艦隊ドック」から艦をタップで選択し、あなたのマップをタップして配置します。</li>
                 <li>「艦隊を回転」ボタンで、配置する艦の向きを変えられます。</li>
                 <li>すべての艦を配置すると「ゲーム開始」ボタンが押せるようになります。</li>
             </ul>
@@ -81,7 +88,7 @@
     <audio id="hit-sound" src="hit.mp3" preload="auto"></audio>
     <audio id="sunk-sound" src="sunk.mp3" preload="auto"></audio>
     <audio id="title-sound" src="title.mp3" preload="auto"></audio>
-    <audio id="bgm-sound" src="bgm2.wav" loop preload="auto"></audio>
+    <audio id="bgm-sound" src="bgm.mp3" loop preload="auto"></audio>
     <script src="script.js"></script>
 </body>
 </html>

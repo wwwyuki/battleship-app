@@ -6,6 +6,7 @@ body {
     margin: 0;
     box-sizing: border-box;
     font-size: 16px; /*基準フォントサイズ*/
+    overflow: hidden; /* ★スクロールを禁止 */
 }
 
 h1, h2, h3 {
@@ -25,8 +26,7 @@ h2 { font-size: clamp(1rem, 3vw, 1.5rem); }
     width: 100%;
     max-width: 1400px; /* PCでの最大幅 */
     margin: 0 auto;
-    /* ★修正：画面幅が足りないときに折り返すように変更 */
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* 画面幅が足りないときに折り返す */
 }
 
 .game-container {
@@ -65,11 +65,9 @@ h2 { font-size: clamp(1rem, 3vw, 1.5rem); }
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(10, 1fr);
     border: max(2px, 0.2vw) solid #333; /* 枠線も可変に */
-    /* 画面幅に応じてサイズ変更、ただし最小・最大サイズを指定 */
     width: 30vw;
     max-width: 300px;
     min-width: 180px;
-    /* 常に正方形を維持 */
     aspect-ratio: 1 / 1;
 }
 
@@ -81,7 +79,6 @@ h2 { font-size: clamp(1rem, 3vw, 1.5rem); }
 
 /* --- 自動で大きさが変わる艦隊ドックの船 --- */
 .ship-preview .ship-cell {
-    /* ゲーム盤のセルサイズと連動して変化 */
     width: 3vw;
     max-width: 30px;
     min-width: 18px;
@@ -95,7 +92,7 @@ h2 { font-size: clamp(1rem, 3vw, 1.5rem); }
 .ship-info {
     text-align: left;
     padding-top: 10px;
-    font-size: clamp(0.7rem, 1.8vw, 1rem); /* 文字サイズを範囲内で可変に */
+    font-size: clamp(0.7rem, 1.8vw, 1rem);
 }
 
 .button-container {
@@ -108,29 +105,29 @@ h2 { font-size: clamp(1rem, 3vw, 1.5rem); }
 
 button {
     padding: 10px 15px;
-    font-size: clamp(0.8rem, 2vw, 1rem); /* ボタンの文字も可変に */
+    font-size: clamp(0.8rem, 2vw, 1rem);
     cursor: pointer;
     border: none;
     border-radius: 5px;
 }
 
-
 /* --- スマートフォン縦画面など、狭い画面用の設定 --- */
 @media (max-width: 768px) {
     .main-content {
-        flex-direction: column; /* 全体を縦積みに変更 */
+        flex-direction: column;
         align-items: center;
         gap: 20px;
     }
-
     .controls-wrapper {
-        order: 3; /* 操作パネルを一番下に配置 */
+        order: 1;
         width: 100%;
-        max-width: 90vw; /* 横幅を画面に合わせる */
+        max-width: 90vw;
     }
-
+    .game-container {
+        order: 2;
+    }
     .game-board {
-        width: 42vw; /* 縦画面では少し大きく表示 */
+        width: 42vw;
         min-width: unset;
     }
     .ship-preview .ship-cell {
@@ -139,13 +136,22 @@ button {
     }
 }
 
-/* --- 以下、主に色や表示/非表示に関するスタイル (変更点ほぼなし) --- */
+/* --- 主に色や表示/非表示に関するスタイル --- */
 .info-container { text-align: center; background-color: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border: 1px solid #ddd; }
 .info-container p { margin: 5px 0 15px 0; min-height: 1.2em; }
 #ai-board .cell:hover { background-color: #e0ffff; cursor: pointer; }
-#player-board .battleship { background-color: #6c757d; }
-#player-board .cruiser { background-color: #4682b4; }
+
+/* プレビュー用の艦 */
+.destroyer-preview .ship-cell { background-color: #b0c4de; }
+.cruiser-preview .ship-cell { background-color: #4682b4; }
+.battleship-preview .ship-cell { background-color: #6c757d; }
+
+/* プレイヤーボードに配置された艦 */
 #player-board .destroyer { background-color: #b0c4de; }
+#player-board .cruiser { background-color: #4682b4; }
+#player-board .battleship { background-color: #6c757d; }
+
+
 .miss { background-color: #add8e6; }
 #ai-board .cell.hit { background-color: #ff4c4c; }
 #player-board .cell.hit { background-color: #dc3545 !important; box-shadow: inset 0 0 5px rgba(0,0,0,0.6); }
@@ -158,11 +164,8 @@ button:disabled { cursor: not-allowed; background-color: #ccc; }
 #reset-button { width: 100%; }
 .shipyard-container { margin-top: 0; padding: 10px; background-color: #e3f2fd; border-radius: 8px; }
 .ship-previews { display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; }
-.ship-preview { display: flex; margin: 5px; cursor: grab; border: 1px solid transparent; }
+.ship-preview { display: flex; margin: 5px; cursor: grab; border: 2px solid transparent; padding: 2px; border-radius: 5px;}
 .ship-preview.vertical { flex-direction: column; }
-.destroyer-preview .ship-cell { background-color: #b0c4de; }
-.cruiser-preview .ship-cell { background-color: #4682b4; }
-.battleship-preview .ship-cell { background-color: #6c757d; }
 .ship-preview.dragging { opacity: 0.5; }
 .cell.drag-over-valid { background-color: #90ee90; }
 .cell.drag-over-invalid { background-color: #f08080; }
@@ -178,48 +181,54 @@ button:disabled { cursor: not-allowed; background-color: #ccc; }
 .title-text { font-size: clamp(3rem, 10vw, 5rem); color: white; text-shadow: 0 0 15px rgba(255, 255, 255, 0.8); }
 @keyframes fade-in-out { 0% { opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
 
-/* --- ★モバイル用の配置コントロール --- */
-.mobile-placement-controls {
-    display: none; /* デフォルトでは非表示 */
-    background-color: #e3f2fd;
-    padding: 15px;
-    border-radius: 8px;
-    text-align: center;
+/* --- モバイル用の配置コントロール --- */
+.mobile-placement-controls { display: none; background-color: #e3f2fd; padding: 10px; border-radius: 8px; }
+#mobile-ship-selector { 
+    display: flex; 
+    gap: 15px; 
+    justify-content: center; 
+    align-items: center;
+    flex-wrap: wrap;
 }
 
-#mobile-ship-selector {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-#mobile-ship-selector button {
-    width: 100%;
-    justify-content: center;
-    border: 2px solid #999;
-}
-
-#mobile-ship-selector button.selected {
+#mobile-ship-selector .ship-preview.selected {
     border-color: #00aeff;
     box-shadow: 0 0 10px rgba(0, 174, 255, 0.7);
-    background-color: #cceeff;
 }
 
-/* --- ★スマートフォン縦画面など、狭い画面用の設定 (追記) --- */
+
 @media (max-width: 768px) {
-    .shipyard-container {
-        display: none; /* PC用のドックは非表示に */
-    }
-    .mobile-placement-controls {
-        display: block; /* モバイル用の選択UIを表示 */
-        order: 2; /* 情報パネルとゲーム盤の間に配置 */
-        width: 100%;
-        max-width: 90vw;
-    }
-    .controls-wrapper {
-        order: 1; /* controls-wrapper 自体の順番を一番上に */
-    }
-    .game-container {
-        order: 2;
-    }
+    .shipyard-container { display: none; }
+    .mobile-placement-controls { display: block; order: 2; width: 100%; max-width: 90vw; }
+}
+
+/* --- 勝利/敗北パネルのスタイル --- */
+#win-lose-panel {
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 31, 63, 0.85);
+    color: white;
+    padding: 30px 60px;
+    border-radius: 15px;
+    font-size: clamp(2rem, 8vw, 4rem);
+    font-weight: bold;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    z-index: 3000;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    transition: top 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease-in-out;
+}
+#win-lose-panel.show {
+    top: 25%;
+    opacity: 1;
+}
+#win-lose-panel.hidden {
+    top: -200px;
+    opacity: 0;
+}
+#win-lose-text {
+    margin: 0;
 }
