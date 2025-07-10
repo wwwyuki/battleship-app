@@ -20,13 +20,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const titlePopup = document.getElementById('title-popup');
     const titleSound = document.getElementById('title-sound');
     const bgmSound = document.getElementById('bgm-sound');
+
     // --- ゲーム設定と状態変数 ---
     const width = 10;
     const ships = [ { name: 'destroyer', size: 2, label: '駆逐艦' }, { name: 'cruiser', size: 3, label: '巡洋艦' }, { name: 'battleship', size: 4, label: '戦艦' }];
     let playerShips, aiShips, isGameOver, currentPlayer, shipsToPlace, shipDirection, draggedShip;
     let aiShots, aiTargetQueue, aiCurrentHits, aiHuntModeParity;
-    let volumeLevel = 2; // ★修正: 2:大, 1:小, 0:ミュート
+    let volumeLevel = 2;
     let hasInteracted = false;
+    // ★追加：モバイル用の選択中艦艇変数
+    let selectedShipToPlace = null;
+
     // --- 初期化処理 ---
     function init() {
         playSound(titleSound);
@@ -42,30 +46,18 @@ document.addEventListener('DOMContentLoaded', () => {
         rulesButton.addEventListener('click', () => rulesModal.classList.remove('hidden'));
         closeRulesButton.addEventListener('click', () => rulesModal.classList.add('hidden'));
         rulesModal.addEventListener('click', (e) => { if (e.target === rulesModal) rulesModal.classList.add('hidden'); });
-        volumeButton.addEventListener('click', cycleVolume); // ★修正
+        volumeButton.addEventListener('click', cycleVolume);
     }
     
-    // --- ★音量切り替え関数 (新ロジック)★ ---
+    // --- 音量切り替え関数 ---
     function setVolume() {
         const sfxSounds = [titleSound, hitSound, sunkSound];
         let sfxVolume, bgmVolume, newIcon;
 
         switch (volumeLevel) {
-            case 2: // 大
-                sfxVolume = 0.3;
-                bgmVolume = 0.05; // BGMは音量30%
-                newIcon = '🔊';
-                break;
-            case 1: // 小
-                sfxVolume = 0.2;
-                bgmVolume = 0.02; // BGMは音量10%
-                newIcon = '🔉';
-                break;
-            case 0: // ミュート
-                sfxVolume = 0.0;
-                bgmVolume = 0.0;
-                newIcon = '🔇';
-                break;
+            case 2: sfxVolume = 0.3; bgmVolume = 0.05; newIcon = '🔊'; break;
+            case 1: sfxVolume = 0.2; bgmVolume = 0.02; newIcon = '🔉'; break;
+            case 0: sfxVolume = 0.0; bgmVolume = 0.0; newIcon = '🔇'; break;
         }
         
         volumeButton.textContent = newIcon;
@@ -73,50 +65,133 @@ document.addEventListener('DOMContentLoaded', () => {
         if (bgmSound) bgmSound.volume = bgmVolume;
     }
 
-    // --- ★音量切り替え関数 (修正)★ ---
     function cycleVolume() {
-        volumeLevel--;
-        if (volumeLevel < 0) volumeLevel = 2;
-        setVolume(); // 新しい設定を適用
+        volumeLevel = (volumeLevel + 2) % 3;
+        setVolume();
     }
 
-    // --- サウンド再生用の関数 (修正) ---
     function playSound(sound) {
-        if (!sound) return; // isMutedチェックは不要に
+        if (!sound) return;
         sound.currentTime = 0;
         sound.play().catch(e => {});
     }
-
-    // (これ以降のすべての関数は、前回の回答から変更ありません)
     
     function resetGame() {
         playerShips = []; aiShips = []; isGameOver = false; currentPlayer = 'player'; shipsToPlace = [...ships]; shipDirection = 'horizontal'; draggedShip = null;
         aiShots = new Set(); aiTargetQueue = []; aiCurrentHits = []; aiHuntModeParity = Math.floor(Math.random() * 2);
+        // ★追加：モバイル用の選択状態をリセット
+        selectedShipToPlace = null; 
+        
         playerBoardEl.innerHTML = ''; aiBoardEl.innerHTML = '';
         createBoard(playerBoardEl); createBoard(aiBoardEl);
         aiShips = placeAllShipsRandomly();
         setupPlacementPhase();
-        turnDisplay.textContent = 'あなたの艦隊を配置してください';
+        turnDisplay.textContent = 'あなたの艦隊を右側に配置してください';
         infoDisplay.textContent = '';
         document.querySelector('.shipyard-container').style.display = 'block';
         placementButtons.style.display = 'flex';
         resetButton.style.display = 'none';
         startButton.disabled = true;
         rotateButton.disabled = false;
-        shipPreviewsEl.querySelectorAll('.ship-preview').forEach(p => { p.style.display = 'flex'; p.classList.remove('vertical'); });
+        
+        shipPreviewsEl.querySelectorAll('.ship-preview').forEach(p => { 
+            p.style.display = 'flex'; 
+            p.classList.remove('vertical', 'selected'); // ★追加: selectedクラスも削除
+        });
+
         if(shipDirection === 'vertical') shipDirection = 'horizontal';
         playerShipInfoEl.innerHTML = ''; aiShipInfoEl.innerHTML = '';
         aiBoardEl.removeEventListener('click', handlePlayerClick);
     }
 
+    // --- ★ここから大幅修正：配置フェーズの設定 ---
     function setupPlacementPhase() {
         const previewShips = document.querySelectorAll('.ship-preview');
-        previewShips.forEach(ship => { ship.draggable = true; ship.addEventListener('dragstart', dragStart); });
         const playerCells = playerBoardEl.querySelectorAll('.cell');
-        playerCells.forEach(cell => { cell.addEventListener('dragover', dragOver); cell.addEventListener('dragleave', dragLeave); cell.addEventListener('drop', dropShip); });
         rotateButton.addEventListener('click', rotateShips);
         startButton.addEventListener('click', startGame);
+
+        // モバイル端末かどうかを判定
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || ('ontouchstart' in window);
+
+        if (isMobile) {
+            // 【モバイル用】クリックで配置
+            infoDisplay.textContent = 'ドックから艦を選び、マップをタップして配置してください。';
+            previewShips.forEach(ship => {
+                ship.draggable = false; // ドラッグを無効化
+                ship.addEventListener('click', () => selectShipToPlace(ship));
+            });
+            playerCells.forEach(cell => {
+                cell.addEventListener('click', (e) => placeShipOnClick(e.target));
+            });
+        } else {
+            // 【PC用】ドラッグ＆ドロップで配置
+            previewShips.forEach(ship => {
+                ship.draggable = true;
+                ship.addEventListener('dragstart', dragStart);
+            });
+            playerCells.forEach(cell => {
+                cell.addEventListener('dragover', dragOver);
+                cell.addEventListener('dragleave', dragLeave);
+                cell.addEventListener('drop', dropShip);
+            });
+        }
     }
+
+    // --- ★ここから追加：モバイル用の関数 ---
+
+    // 艦隊ドックの艦をクリックしたときの処理
+    function selectShipToPlace(shipElement) {
+        // すでに選択中のものがあれば選択を解除
+        if (selectedShipToPlace) {
+            selectedShipToPlace.classList.remove('selected');
+        }
+        // 新しく選択
+        selectedShipToPlace = shipElement;
+        selectedShipToPlace.classList.add('selected');
+        const ship = ships.find(s => s.name === shipElement.dataset.name);
+        infoDisplay.textContent = `「${ship.label}」を選択中...`;
+    }
+
+    // プレイヤーボードのセルをクリックしたときの処理 (モバイル用)
+    function placeShipOnClick(cell) {
+        // 最初のインタラクションでBGM再生
+        if (!hasInteracted) {
+            bgmSound.play().catch(e => {});
+            hasInteracted = true;
+        }
+
+        if (!selectedShipToPlace) {
+            infoDisplay.textContent = '先に艦隊ドックから船を選択してください。';
+            return;
+        }
+
+        const startId = parseInt(cell.dataset.id);
+        const shipName = selectedShipToPlace.dataset.name;
+        const ship = ships.find(s => s.name === shipName);
+        const coords = getShipCoords(startId, ship.size, shipDirection);
+        const isValid = validatePlacement(coords);
+
+        if (isValid) {
+            playerShips.push({ ...ship, coords, hits: [] });
+            coords.forEach(idx => playerBoardEl.querySelector(`.cell[data-id='${idx}']`).classList.add(ship.name, 'taken'));
+            selectedShipToPlace.style.display = 'none';
+            shipsToPlace = shipsToPlace.filter(s => s.name !== shipName);
+            
+            infoDisplay.textContent = `「${ship.label}」を配置しました。`;
+            selectedShipToPlace.classList.remove('selected');
+            selectedShipToPlace = null; // 選択状態をリセット
+
+            if (shipsToPlace.length === 0) {
+                startButton.disabled = false;
+                turnDisplay.textContent = '全艦隊、配置完了！「ゲーム開始」を押してください。';
+                rotateButton.disabled = true;
+            }
+        } else {
+            infoDisplay.textContent = 'その場所には配置できません。他の場所を選択してください。';
+        }
+    }
+    // --- ★ここまで追加 ---
     
     function rotateShips() {
         shipDirection = shipDirection === 'horizontal' ? 'vertical' : 'horizontal';
@@ -124,13 +199,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function dragStart(e) {
-        // 👇ここから修正👇
-        // 最初の操作でBGMを再生開始
         if (!hasInteracted) {
             bgmSound.play().catch(e => {});
             hasInteracted = true;
         }
-        // 👆ここまで修正👆
         draggedShip = e.target.closest('.ship-preview');
     }
     function dragOver(e) { e.preventDefault(); highlightCells(e.target, 'add'); }
@@ -298,6 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     init();
 });
+
 // --- Service Workerの登録 ---
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

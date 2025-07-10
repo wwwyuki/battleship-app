@@ -25,7 +25,8 @@ h2 { font-size: clamp(1rem, 3vw, 1.5rem); }
     width: 100%;
     max-width: 1400px; /* PCでの最大幅 */
     margin: 0 auto;
-    flex-wrap: nowrap; /* デフォルトでは折り返さない */
+    /* ★修正：画面幅が足りないときに折り返すように変更 */
+    flex-wrap: wrap;
 }
 
 .game-container {
@@ -176,3 +177,49 @@ button:disabled { cursor: not-allowed; background-color: #ccc; }
 .title-popup { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #001f3f; display: flex; justify-content: center; align-items: center; z-index: 2000; animation: fade-in-out 3s ease-in-out forwards; }
 .title-text { font-size: clamp(3rem, 10vw, 5rem); color: white; text-shadow: 0 0 15px rgba(255, 255, 255, 0.8); }
 @keyframes fade-in-out { 0% { opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
+
+/* --- ★モバイル用の配置コントロール --- */
+.mobile-placement-controls {
+    display: none; /* デフォルトでは非表示 */
+    background-color: #e3f2fd;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+#mobile-ship-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#mobile-ship-selector button {
+    width: 100%;
+    justify-content: center;
+    border: 2px solid #999;
+}
+
+#mobile-ship-selector button.selected {
+    border-color: #00aeff;
+    box-shadow: 0 0 10px rgba(0, 174, 255, 0.7);
+    background-color: #cceeff;
+}
+
+/* --- ★スマートフォン縦画面など、狭い画面用の設定 (追記) --- */
+@media (max-width: 768px) {
+    .shipyard-container {
+        display: none; /* PC用のドックは非表示に */
+    }
+    .mobile-placement-controls {
+        display: block; /* モバイル用の選択UIを表示 */
+        order: 2; /* 情報パネルとゲーム盤の間に配置 */
+        width: 100%;
+        max-width: 90vw;
+    }
+    .controls-wrapper {
+        order: 1; /* controls-wrapper 自体の順番を一番上に */
+    }
+    .game-container {
+        order: 2;
+    }
+}
