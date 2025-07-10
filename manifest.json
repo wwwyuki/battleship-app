@@ -1,9 +1,9 @@
 {
   "name": "海戦ゲーム (Battleship)",
   "short_name": "海戦ゲーム",
-  "start_url": "./index.html",
+  "start_url": ".",
   "scope": ".",
-  "id": "/?source=pwa",
+  "id": "/?source=pwa-v1",
   "display": "standalone",
   "background_color": "#f0f8ff",
   "theme_color": "#001f3f",
