@@ -1,5 +1,5 @@
 // ★キャッシュ名を変更して、強制的に新しいものを使わせる
-const CACHE_NAME = 'battleship-game-cache-v3'; 
+const CACHE_NAME = 'battleship-game-cache-v4'; 
 const urlsToCache = [
   './',
   './index.html',
@@ -8,7 +8,10 @@ const urlsToCache = [
   './manifest.json',
   './hit.mp3',
   './sunk.mp3',
-  './bgm.mp3'
+  './bgm.mp3',
+  // ★アイコンをキャッシュリストに追加
+  './icon-192.png',
+  './icon-512.png'
 ];
 
 // インストール時にキャッシュを作成する
@@ -52,10 +55,8 @@ self.addEventListener('fetch', event => {
     caches.match(event.request)
       .then(response => {
         if (response) {
-          // console.log('[Service Worker] Found in cache:', event.request.url);
           return response;
         }
-        // console.log('[Service Worker] Network request for:', event.request.url);
         return fetch(event.request);
       })
   );
