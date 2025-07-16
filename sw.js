@@ -50,7 +50,7 @@ self.addEventListener('activate', event => {
 });
 
 // リクエストがあった場合にキャッシュから返す
-self.addEventListener('fetch', event => {
+/*self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
@@ -60,4 +60,4 @@ self.addEventListener('fetch', event => {
         return fetch(event.request);
       })
   );
-});
+});*/

@@ -326,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
         infoDisplay.textContent = '敵の艦隊を攻撃せよ！';
 
         aiBoardEl.addEventListener('click', handlePlayerClick);
-        aiAttackInterval = setInterval(aiAttack, 50);
+        aiAttackInterval = setInterval(aiAttack, 500);
     }
 
     function handlePlayerClick(e) {
