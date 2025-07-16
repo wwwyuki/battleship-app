@@ -65,8 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const sfxSounds = [hitSound, sunkSound]; // titleSoundを削除
         let sfxVolume, bgmVolume, newIcon;
         switch (volumeLevel) {
-            case 2: sfxVolume = 0.2; bgmVolume = 0.03; newIcon = '🔊'; break;
-            case 1: sfxVolume = 0.1; bgmVolume = 0.01; newIcon = '🔉'; break;
+            case 2: sfxVolume = 0.2; bgmVolume = 0.3; newIcon = '🔊'; break;
+            case 1: sfxVolume = 0.1; bgmVolume = 0.1; newIcon = '🔉'; break;
             case 0: sfxVolume = 0.0; bgmVolume = 0.0; newIcon = '🔇'; break;
         }
         volumeButton.textContent = newIcon;
@@ -326,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
         infoDisplay.textContent = '敵の艦隊を攻撃せよ！';
 
         aiBoardEl.addEventListener('click', handlePlayerClick);
-        aiAttackInterval = setInterval(aiAttack, 1200);
+        aiAttackInterval = setInterval(aiAttack, 50);
     }
 
     function handlePlayerClick(e) {
